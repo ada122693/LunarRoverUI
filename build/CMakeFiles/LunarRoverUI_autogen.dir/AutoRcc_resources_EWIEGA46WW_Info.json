@@ -1,0 +1,22 @@
+{
+	"BUILD_DIR" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/LunarRoverUI_autogen",
+	"CMAKE_BINARY_DIR" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI",
+	"CMAKE_SOURCE_DIR" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/LunarRoverUI_autogen/include",
+	"INPUTS" : [ "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/styles.qss" ],
+	"LOCK_FILE" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/LunarRoverUI_autogen.dir/AutoRcc_resources_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "/usr/bin/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/LunarRoverUI_autogen.dir/AutoRcc_resources_EWIEGA46WW_Used.txt",
+	"SOURCE" : "/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/resources.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}

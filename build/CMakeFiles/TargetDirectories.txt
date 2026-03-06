@@ -1,0 +1,5 @@
+/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/LunarRoverUI.dir
+/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/edit_cache.dir
+/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/rebuild_cache.dir
+/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/LunarRoverUI_autogen_timestamp_deps.dir
+/mnt/datadrive/tareas/spring2026/csproject/LunarRoverUI/build/CMakeFiles/LunarRoverUI_autogen.dir
