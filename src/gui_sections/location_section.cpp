@@ -20,12 +20,10 @@ void LocationSection::setupLocationLayout()
     // X coordinate
     QLabel *xCoordLabel = new QLabel(tr("X: 1234.56"), this);
     xCoordLabel->setObjectName("xCoordLabel");
-    xCoordLabel->setFont(QFont("Arial", 11));
 
     // Y coordinate
     QLabel *yCoordLabel = new QLabel(tr("Y: 7890.12"), this);
     yCoordLabel->setObjectName("yCoordLabel");
-    yCoordLabel->setFont(QFont("Arial", 11));
 
     locationLayout->addWidget(xCoordLabel);
     locationLayout->addWidget(yCoordLabel);

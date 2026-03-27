@@ -20,12 +20,10 @@ void ObjectivesSection::setupObjectivesLayout()
     // current goal
     QLabel *currentGoalLabel = new QLabel(tr("Current Goal: Collect rock samples"), this);
     currentGoalLabel->setObjectName("currentGoalLabel");
-    currentGoalLabel->setFont(QFont("Arial", 11));
 
     // ETA
     QLabel *etaLabel = new QLabel(tr("ETA: 15 minutes"), this);
     etaLabel->setObjectName("etaLabel");
-    etaLabel->setFont(QFont("Arial", 11));
 
     objectivesLayout->addWidget(currentGoalLabel);
     objectivesLayout->addWidget(etaLabel);

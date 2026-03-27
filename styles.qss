@@ -52,15 +52,13 @@ QGroupBox::title {
     font-weight: bold;
 }
 
-/* camera placeholder */
-QLabel#cameraPlaceholder {
-    background-color: #1e1e1e;
-    color: #ffffff;
-    border: 2px dashed #555555;
+/* camera display */
+QLabel#cameraDisplay {
+    background-color: #000000;
+    color: #aaaaaa;
+    border: 1px solid #3e3e42;
     border-radius: 4px;
-    padding: 40px;
-    font-size: 16px;
-    text-align: center;
+    font-size: 14px;
 }
 
 /* objective, location labels */
@@ -126,6 +124,61 @@ QDialog QPushButton {
 
 QDialog QPushButton:hover {
     background-color: #118dff;
+}
+
+/* back button for main window */
+QPushButton#backButton {
+    background-color: #007acc;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+QPushButton#backButton:hover {
+    background-color: #118dff;
+}
+
+QPushButton#backButton:pressed {
+    background-color: #0056b3;
+}
+
+/* status section labels */
+QLabel#batteryLabel,
+QLabel#connectionLabel {
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+/* camera section */
+QLabel#cameraDisplay {
+    text-align: center;
+}
+
+/* objectives section labels */
+QLabel#currentGoalLabel,
+QLabel#etaLabel {
+    font-size: 11pt;
+}
+
+/* location section labels */
+QLabel#xCoordLabel,
+QLabel#yCoordLabel {
+    font-size: 11pt;
+}
+
+/* overrides section button */
+QPushButton#manualOverridesButton {
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+/* splash screen elements */
+QLabel#rover1Status,
+QLabel#rover2Status,
+QLabel#connectionStatus {
+    font-weight: bold;
 }
 
 QLabel {

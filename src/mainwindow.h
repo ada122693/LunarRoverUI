@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedWidget>
 #include "gui_manager.h"
+#include "splash_screen.h"
 
 namespace LunarRoverUI {
 
@@ -12,12 +14,20 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
 
 private slots:
-    void onManualOverridesRequested();
+    void onRoverSelected(int roverId);
+
+private:
+    void showSplashScreen();
+    void showMainUI();
 
 private:
     GUIManager *m_guiManager;
+    SplashScreen *m_splashScreen;
+    QPushButton *m_backButton;
+    QStackedWidget *m_stackedWidget;
 };
 
 }

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <QStackedWidget>
 
 namespace LunarRoverUI {
 
@@ -9,20 +10,60 @@ MainWindow::MainWindow(QWidget *parent)
     resize(800, 700);
 
     m_guiManager = new GUIManager(this);
-    if (m_guiManager) {
-        QWidget *uiWidget = m_guiManager->createUI(this);
-        setCentralWidget(uiWidget);
-    } else {
-        setWindowTitle(tr("Lunar Rover UI - Error"));
-        QLabel *errorLabel = new QLabel(tr("Failed to initialize UI"), this);
-        setCentralWidget(errorLabel);
-    }
+    m_splashScreen = new SplashScreen(this);
+    m_backButton = nullptr;
 
-    // connect signals
-    connect(m_guiManager, &GUIManager::manualOverridesRequested, this, &MainWindow::onManualOverridesRequested);
+    // create stacked widget for screen management
+    m_stackedWidget = new QStackedWidget(this);
+    setCentralWidget(m_stackedWidget);
+
+    // add splash screen to stacked widget
+    m_stackedWidget->addWidget(m_splashScreen);
+
+    // connect rover selection signal
+    connect(m_splashScreen, &SplashScreen::roverSelected, this, &MainWindow::onRoverSelected);
+
+    // Show splash screen first
+    showSplashScreen();
 }
 
-void MainWindow::onManualOverridesRequested()
+MainWindow::~MainWindow()
 {
+    delete m_guiManager;
+    delete m_splashScreen;
+    delete m_stackedWidget;
+}
+
+void MainWindow::showSplashScreen()
+{
+    m_stackedWidget->setCurrentWidget(m_splashScreen);
+}
+
+void MainWindow::showMainUI()
+{
+    QWidget *uiWidget = m_guiManager->createUI(this);
+    m_stackedWidget->addWidget(uiWidget);
+    m_stackedWidget->setCurrentWidget(uiWidget);
+
+    // add back button to main window
+    if (!m_backButton) {
+        m_backButton = new QPushButton(tr("Back to Rover Selection"), this);
+        m_backButton->setObjectName("backButton");
+        m_backButton->show();
+        connect(m_backButton, &QPushButton::clicked, this, &MainWindow::showSplashScreen);
+    }
+
+    // add back button to the main layout too
+    QVBoxLayout *mainLayout = qobject_cast<QVBoxLayout*>(uiWidget->layout());
+    if (mainLayout && mainLayout->indexOf(m_backButton) == -1) {
+        mainLayout->addWidget(m_backButton);
+    }
+}
+
+void MainWindow::onRoverSelected(int roverId)
+{
+    if (roverId == 1) {
+        showMainUI();
+    }
 }
 }

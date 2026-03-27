@@ -8,6 +8,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc videoio)
 
 set(PROJECT_SOURCES
     src/main.cpp
@@ -15,6 +16,8 @@ set(PROJECT_SOURCES
     src/mainwindow.h
     src/gui_manager.cpp
     src/gui_manager.h
+    src/splash_screen.cpp
+    src/splash_screen.h
     src/gui_sections/status_section.h
     src/gui_sections/status_section.cpp
     src/gui_sections/camera_section.h
@@ -30,4 +33,4 @@ set(PROJECT_SOURCES
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets ${OpenCV_LIBS})

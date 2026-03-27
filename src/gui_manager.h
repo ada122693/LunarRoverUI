@@ -16,6 +16,7 @@ class GUIManager : public QObject
 public:
     explicit GUIManager(QObject *parent = nullptr);
     QWidget* createUI(QWidget *parent);
+    void selectRover(int roverId);
 
 private:
     StatusSection *m_statusSection;
@@ -26,6 +27,7 @@ private:
 
 signals:
     void manualOverridesRequested();
+    void roverSelected(int roverId);
 
 private slots:
     void onManualOverridesClicked();

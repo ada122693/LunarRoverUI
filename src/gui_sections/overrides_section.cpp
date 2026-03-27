@@ -25,7 +25,6 @@ void OverridesSection::setupOverridesLayout()
     // manual overrides button
     QPushButton *manualOverridesButton = new QPushButton(tr("Open Manual Overrides?"), this);
     manualOverridesButton->setObjectName("manualOverridesButton");
-    manualOverridesButton->setFont(QFont("Arial", 12, QFont::Bold));
     connect(manualOverridesButton, &QPushButton::clicked, this, &OverridesSection::manualOverridesRequested);
 
     overridesLayout->addWidget(manualOverridesButton);

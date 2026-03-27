@@ -49,4 +49,9 @@ void GUIManager::onManualOverridesClicked()
     emit manualOverridesRequested();
 }
 
+void GUIManager::selectRover(int roverId)
+{
+    emit roverSelected(roverId);
+}
+
 }
