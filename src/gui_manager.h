@@ -2,6 +2,7 @@
 #define GUI_MANAGER_H
 
 #include <QObject>
+#include "simulation_bridge.h"
 #include "gui_sections/status_section.h"
 #include "gui_sections/camera_section.h"
 #include "gui_sections/objectives_section.h"
@@ -24,6 +25,7 @@ private:
     ObjectivesSection *m_objectivesSection;
     LocationSection *m_locationSection;
     OverridesSection *m_overridesSection;
+    SimulationBridge *m_simulationBridge;
 
 signals:
     void manualOverridesRequested();

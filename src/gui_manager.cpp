@@ -10,6 +10,7 @@ namespace LunarRoverUI {
 GUIManager::GUIManager(QObject *parent)
     : QObject(parent)
 {
+    m_simulationBridge = new SimulationBridge(this);
 }
 
 QWidget* GUIManager::createUI(QWidget *parent)
