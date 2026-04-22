@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
+#include <QMessageBox>
 #include "mainwindow.h"
 
 QString loadStyleSheet(const QString& filename)
@@ -27,6 +28,18 @@ int main(int argc, char *argv[])
     }
 
     LunarRoverUI::MainWindow mainWindow;
+    // Initialize micro-ROS connection
+    auto bridge = mainWindow.getSimulationBridge();
+    if (bridge) {
+        // Try to connect to micro-ROS
+        if (!bridge->connectToMicroROS("your_wifi_ssid", "your_wifi_password",
+                                      "192.168.1.100", 8090)) {
+            QMessageBox::warning(nullptr, "Connection Error",
+                               "Failed to connect to Micro-ROS agent. "
+                               "Please check your WiFi credentials and agent IP.");
+        }
+    }
+
     mainWindow.show();
 
     return app.exec();

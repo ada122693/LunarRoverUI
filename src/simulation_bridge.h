@@ -3,7 +3,17 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QDateTime>
 #include <string>
+#include <mutex>
+
+#ifdef MICRO_ROS_SUPPORT
+#include <rclcpp/rclcpp.hpp>
+#include <nav_msgs/msg/odometry.hpp>
+#include <geometry_msgs/msg/twist.hpp>
+#include <sensor_msgs/msg/battery_state.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
+#endif
 
 namespace LunarRoverUI {
 
@@ -14,9 +24,21 @@ public:
     explicit SimulationBridge(QObject *parent = nullptr);
     ~SimulationBridge();
 
-    bool connectToGazebo(const std::string &worldName = "default");
+    bool connectToRover(const std::string &agentIP = "127.0.0.1", int agentPort = 8888);
     void disconnect();
     bool isConnected() const;
+    
+    bool connectToMicroROS(const std::string &wifiSSID, const std::string &wifiPassword,
+                          const std::string &agentIP, int agentPort = 8888);
+    void setMicroROSConfig(const std::string &wifiSSID, const std::string &wifiPassword,
+                          const std::string &agentIP, int agentPort = 8888);
+    bool isMicroROSConnected() const;
+    
+    void setRoverConfig(const std::string &agentIP, int agentPort = 8888);
+    void emergencyStop();
+    
+    qint64 getLastHeartbeat() const;
+    bool isCommunicationHealthy() const;
 
 public slots:
     void sendVelocityCommand(double linear, double angular);
@@ -32,13 +54,46 @@ signals:
     void batteryLevelUpdated(double percentage);
     void cameraFrameReceived(const unsigned char *data, int width, int height);
     void simulationTimeUpdated(double timeSeconds);
+    void microROSConnectionStatusChanged(bool connected);
 
 private slots:
     void simulationUpdateTick();
 
 private:
+#ifdef MICRO_ROS_SUPPORT
+    void onOdometryReceived(const nav_msgs::msg::Odometry::SharedPtr msg);
+    void onTwistMessage(const geometry_msgs::msg::Twist::SharedPtr msg);
+    void onBatteryReceived(const sensor_msgs::msg::BatteryState::SharedPtr msg);
+    void onCameraFrameReceived(const sensor_msgs::msg::CompressedImage::SharedPtr msg);
+#endif
+
+private:
     bool m_connected;
     QTimer *m_updateTimer;
+
+#ifdef MICRO_ROS_SUPPORT
+    // ROS2 / Micro-ROS members
+    rclcpp::Node::SharedPtr m_node;
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr m_twist_pub;
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr m_odom_sub;
+    rclcpp::Subscription<sensor_msgs::msg::BatteryState>::SharedPtr m_battery_sub;
+    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr m_camera_sub;
+    
+    // Generic micro-ROS publishers/subscribers
+    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr m_twist_sub;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr m_odom_pub;
+    
+    rclcpp::executors::SingleThreadedExecutor::SharedPtr m_executor;
+    std::thread m_rosThread;
+#endif
+
+    // Connection state
+    bool m_microROSConnected;
+    std::string m_wifiSSID;
+    std::string m_wifiPassword;
+    std::string m_agentIP;
+    int m_agentPort;
+    qint64 m_lastHeartbeat;
 
     // Simulation state
     double m_simTime;

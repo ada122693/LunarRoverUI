@@ -431,6 +431,7 @@ LunarRoverUI_autogen/timestamp: \
 	/usr/include/opencv4/opencv2/video/tracking.hpp \
 	/usr/include/opencv4/opencv2/videoio.hpp \
 	/usr/include/pthread.h \
+	/usr/include/qt/QtCore/QDateTime \
 	/usr/include/qt/QtCore/QObject \
 	/usr/include/qt/QtCore/QTimer \
 	/usr/include/qt/QtCore/qalgorithms.h \
@@ -447,6 +448,7 @@ LunarRoverUI_autogen/timestamp: \
 	/usr/include/qt/QtCore/qcontainerfwd.h \
 	/usr/include/qt/QtCore/qcontainertools_impl.h \
 	/usr/include/qt/QtCore/qdatastream.h \
+	/usr/include/qt/QtCore/qdatetime.h \
 	/usr/include/qt/QtCore/qflags.h \
 	/usr/include/qt/QtCore/qgenericatomic.h \
 	/usr/include/qt/QtCore/qglobal.h \

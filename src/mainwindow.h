@@ -16,6 +16,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    // Get the simulation bridge for external access
+    SimulationBridge* getSimulationBridge();
+
 private slots:
     void onRoverSelected(int roverId);
 
@@ -28,6 +31,7 @@ private:
     SplashScreen *m_splashScreen;
     QPushButton *m_backButton;
     QStackedWidget *m_stackedWidget;
+    SimulationBridge *m_simulationBridge;
 };
 
 }

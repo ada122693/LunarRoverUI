@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_guiManager = new GUIManager(this);
     m_splashScreen = new SplashScreen(this);
     m_backButton = nullptr;
+    m_simulationBridge = new SimulationBridge(this);
 
     // create stacked widget for screen management
     m_stackedWidget = new QStackedWidget(this);
@@ -32,6 +33,13 @@ MainWindow::~MainWindow()
     delete m_guiManager;
     delete m_splashScreen;
     delete m_stackedWidget;
+    delete m_simulationBridge;
+}
+
+// Get the simulation bridge for external access
+SimulationBridge* MainWindow::getSimulationBridge()
+{
+    return m_simulationBridge;
 }
 
 void MainWindow::showSplashScreen()
