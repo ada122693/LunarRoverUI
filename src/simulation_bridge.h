@@ -13,6 +13,7 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <sensor_msgs/msg/battery_state.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
+#include <sensor_msgs/msg/imu.hpp>
 #endif
 
 namespace LunarRoverUI {
@@ -52,7 +53,7 @@ signals:
     void orientationUpdated(double roll, double pitch, double yaw);
     void velocityUpdated(double linear, double angular);
     void batteryLevelUpdated(double percentage);
-    void cameraFrameReceived(const unsigned char *data, int width, int height);
+    void cameraFrameReceived(const unsigned char *data, size_t dataSize, int width, int height);
     void simulationTimeUpdated(double timeSeconds);
     void microROSConnectionStatusChanged(bool connected);
 
@@ -65,6 +66,7 @@ private:
     void onTwistMessage(const geometry_msgs::msg::Twist::SharedPtr msg);
     void onBatteryReceived(const sensor_msgs::msg::BatteryState::SharedPtr msg);
     void onCameraFrameReceived(const sensor_msgs::msg::CompressedImage::SharedPtr msg);
+    void onImuReceived(const sensor_msgs::msg::Imu::SharedPtr msg);
 #endif
 
 private:
@@ -78,6 +80,7 @@ private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr m_odom_sub;
     rclcpp::Subscription<sensor_msgs::msg::BatteryState>::SharedPtr m_battery_sub;
     rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr m_camera_sub;
+    rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr m_imu_sub;
     
     // Generic micro-ROS publishers/subscribers
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr m_twist_sub;

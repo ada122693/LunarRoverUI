@@ -6,8 +6,6 @@
 #include <QLabel>
 #include <QTimer>
 
-#include <opencv2/opencv.hpp>
-
 namespace LunarRoverUI {
 
 class CameraSection : public QGroupBox
@@ -18,15 +16,13 @@ public:
     explicit CameraSection(QWidget *parent = nullptr);
     ~CameraSection();
 
-private slots:
-    void updateFrame();
+public slots:
+    void onCameraFrameReceived(const unsigned char *data, size_t dataSize, int width, int height);
 
 private:
     void setupCameraLayout();
 
     QLabel *cameraLabel;
-    QTimer *timer;
-    cv::VideoCapture *capture;
 };
 
 }

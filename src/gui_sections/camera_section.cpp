@@ -1,52 +1,45 @@
 #include "camera_section.h"
 
 #include <QPixmap>
+#include <QImage>
+#include <QBuffer>
 
 namespace LunarRoverUI {
 
 CameraSection::CameraSection(QWidget *parent)
-    : QGroupBox(parent),
-      capture(nullptr),
-      timer(nullptr)
+    : QGroupBox(parent)
 {
     setupCameraLayout();
-
-    capture = new cv::VideoCapture(0);
-
-    if (capture->isOpened()) {
-        timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &CameraSection::updateFrame);
-        timer->start(33); // ~30 FPS
-    } else {
-        cameraLabel->setText(tr("No camera detected"));
-        delete capture;
-        capture = nullptr;
-    }
+    cameraLabel->setText(tr("Waiting for camera feed..."));
 }
 
 CameraSection::~CameraSection()
 {
-    if (timer) {
-        timer->stop();
-    }
-    if (capture) {
-        capture->release();
-        delete capture;
-    }
 }
 
-void CameraSection::updateFrame()
+void CameraSection::onCameraFrameReceived(const unsigned char *data, size_t dataSize, int width, int height)
 {
-    cv::Mat frame;
-    if (capture && capture->read(frame) && !frame.empty()) {
-        cv::Mat rgb;
-        cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
+    // Yahboom sends JPEG compressed images via /esp32_img
+    if (data == nullptr || dataSize == 0) {
+        cameraLabel->setText(tr("Camera feed disconnected"));
+        return;
+    }
 
-        QImage img(rgb.data, rgb.cols, rgb.rows, static_cast<int>(rgb.step),
-                   QImage::Format_RGB888);
-        cameraLabel->setPixmap(
-            QPixmap::fromImage(img).scaled(
-                cameraLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    // Decode JPEG from raw buffer using QImage
+    QImage image;
+    bool loaded = image.loadFromData(data, static_cast<int>(dataSize), "JPEG");
+    
+    if (!loaded) {
+        // Try auto-detect format if JPEG fails
+        loaded = image.loadFromData(data, static_cast<int>(dataSize));
+    }
+
+    if (loaded && !image.isNull()) {
+        QPixmap pixmap = QPixmap::fromImage(image).scaled(
+            cameraLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        cameraLabel->setPixmap(pixmap);
+    } else {
+        cameraLabel->setText(tr("⚠️ Failed to decode camera frame"));
     }
 }
 

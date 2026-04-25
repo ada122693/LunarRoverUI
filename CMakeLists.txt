@@ -13,13 +13,13 @@ find_package(rclcpp QUIET)
 find_package(std_msgs QUIET)
 find_package(nav_msgs QUIET)
 find_package(geometry_msgs QUIET)
-find_package(micro_ros_arduino QUIET)
+find_package(sensor_msgs QUIET)
 
-if(rclcpp_FOUND AND micro_ros_arduino_FOUND)
+if(rclcpp_FOUND AND nav_msgs_FOUND AND geometry_msgs_FOUND AND sensor_msgs_FOUND)
   add_definitions(-DMICRO_ROS_SUPPORT)
-  message(STATUS "Micro-ROS support enabled")
+  message(STATUS "ROS2 support enabled - hardware rover support available")
 else()
-  message(STATUS "Micro-ROS libraries not found - real rover support disabled")
+  message(STATUS "ROS2 libraries not found - real rover support disabled")
 endif()
 
 set(PROJECT_SOURCES
@@ -49,12 +49,12 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets ${OpenCV_LIBS})
 
-if(rclcpp_FOUND AND micro_ros_arduino_FOUND)
+if(rclcpp_FOUND AND nav_msgs_FOUND AND geometry_msgs_FOUND AND sensor_msgs_FOUND)
   target_link_libraries(${PROJECT_NAME} PRIVATE
     rclcpp::rclcpp
     std_msgs::std_msgs
     nav_msgs::nav_msgs
     geometry_msgs::geometry_msgs
-    micro_ros_arduino::micro_ros_arduino
+    sensor_msgs::sensor_msgs
   )
 endif()

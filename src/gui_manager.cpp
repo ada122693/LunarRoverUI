@@ -1,4 +1,5 @@
 #include "gui_manager.h"
+#include "simulation_bridge.h"
 #include "gui_sections/status_section.h"
 #include "gui_sections/camera_section.h"
 #include "gui_sections/objectives_section.h"
@@ -28,6 +29,10 @@ QWidget* GUIManager::createUI(QWidget *parent)
 
     m_cameraSection = new CameraSection(centralWidget);
     mainLayout->addWidget(m_cameraSection);
+
+    // Wire up simulation bridge signals to UI sections
+    connect(m_simulationBridge, &SimulationBridge::cameraFrameReceived,
+            m_cameraSection, &CameraSection::onCameraFrameReceived);
 
     m_objectivesSection = new ObjectivesSection(centralWidget);
     mainLayout->addWidget(m_objectivesSection);

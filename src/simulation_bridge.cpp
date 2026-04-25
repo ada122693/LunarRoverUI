@@ -47,9 +47,9 @@ bool SimulationBridge::connectToRover(const std::string &agentIP, int agentPort)
             "cmd_vel", rclcpp::QoS(10).best_effort()
         );
 
-        // Subscriber: Receive odometry from ESP32
+        // Subscriber: Receive odometry from ESP32 (Yahboom uses /odom_raw)
         m_odom_sub = m_node->create_subscription<nav_msgs::msg::Odometry>(
-            "odom", rclcpp::QoS(10).best_effort(),
+            "odom_raw", rclcpp::QoS(10).best_effort(),
             [this](const nav_msgs::msg::Odometry::SharedPtr msg) {
                 this->onOdometryReceived(msg);
             }
@@ -63,11 +63,19 @@ bool SimulationBridge::connectToRover(const std::string &agentIP, int agentPort)
             }
         );
 
-        // Subscriber: Receive camera feed from ESP32-CAM
+        // Subscriber: Receive camera feed from ESP32-CAM (Yahboom uses /esp32_img)
         m_camera_sub = m_node->create_subscription<sensor_msgs::msg::CompressedImage>(
-            "camera/image_raw/compressed", rclcpp::QoS(5).best_effort(),
+            "esp32_img", rclcpp::QoS(5).best_effort(),
             [this](const sensor_msgs::msg::CompressedImage::SharedPtr msg) {
                 this->onCameraFrameReceived(msg);
+            }
+        );
+
+        // Subscriber: Receive IMU data from ESP32 (Yahboom uses /imu)
+        m_imu_sub = m_node->create_subscription<sensor_msgs::msg::Imu>(
+            "imu", rclcpp::QoS(10).best_effort(),
+            [this](const sensor_msgs::msg::Imu::SharedPtr msg) {
+                this->onImuReceived(msg);
             }
         );
 
@@ -268,11 +276,24 @@ void SimulationBridge::onBatteryReceived(const sensor_msgs::msg::BatteryState::S
     emit batteryLevelUpdated(m_batteryLevel);
 }
 
+void SimulationBridge::onImuReceived(const sensor_msgs::msg::Imu::SharedPtr msg)
+{
+    m_lastHeartbeat = QDateTime::currentMSecsSinceEpoch();
+
+    // Extract orientation from quaternion
+    const auto &q = msg->orientation;
+    m_roll = atan2(2.0 * (q.w * q.x + q.y * q.z), 1.0 - 2.0 * (q.x * q.x + q.y * q.y));
+    m_pitch = asin(2.0 * (q.w * q.y - q.z * q.x));
+    m_yaw = atan2(2.0 * (q.w * q.z + q.x * q.y), 1.0 - 2.0 * (q.y * q.y + q.z * q.z));
+
+    emit orientationUpdated(m_roll, m_pitch, m_yaw);
+}
+
 void SimulationBridge::onCameraFrameReceived(const sensor_msgs::msg::CompressedImage::SharedPtr msg)
 {
     m_lastHeartbeat = QDateTime::currentMSecsSinceEpoch();
     // Signal UI with raw JPEG buffer - UI will handle decompression
-    emit cameraFrameReceived(msg->data.data(), 0, 0);
+    emit cameraFrameReceived(msg->data.data(), msg->data.size(), 0, 0);
 }
 #endif
 
@@ -341,7 +362,8 @@ void SimulationBridge::simulationUpdateTick()
     // Update simulation time
     m_simTime += 0.05;
 
-    // Update position based on velocity
+#ifndef MICRO_ROS_SUPPORT
+    // Only do dead reckoning in simulation mode (no real hardware connected)
     if (m_linearVel != 0.0 || m_angularVel != 0.0) {
         m_posX += m_linearVel * cos(m_yaw) * 0.05;
         m_posY += m_linearVel * sin(m_yaw) * 0.05;
@@ -350,35 +372,6 @@ void SimulationBridge::simulationUpdateTick()
         emit positionUpdated(m_posX, m_posY, m_posZ);
         emit orientationUpdated(m_roll, m_pitch, m_yaw);
         emit velocityUpdated(m_linearVel, m_angularVel);
-    }
-
-    // Update battery level
-    m_batteryLevel -= 0.001;
-    if (m_batteryLevel < 0) m_batteryLevel = 0;
-    emit batteryLevelUpdated(m_batteryLevel);
-
-#ifdef MICRO_ROS_SUPPORT
-    // Publish odometry data
-    if (m_microROSConnected && m_odom_pub) {
-        auto odom_msg = std::make_unique<nav_msgs::msg::Odometry>();
-        odom_msg->header.stamp = m_node->now();
-        odom_msg->header.frame_id = "odom";
-        odom_msg->child_frame_id = "base_link";
-
-        odom_msg->pose.pose.position.x = m_posX;
-        odom_msg->pose.pose.position.y = m_posY;
-        odom_msg->pose.pose.position.z = m_posZ;
-
-        // Set orientation quaternion (simplified)
-        odom_msg->pose.pose.orientation.x = 0.0;
-        odom_msg->pose.pose.orientation.y = 0.0;
-        odom_msg->pose.pose.orientation.z = sin(m_yaw / 2.0);
-        odom_msg->pose.pose.orientation.w = cos(m_yaw / 2.0);
-
-        odom_msg->twist.twist.linear.x = m_linearVel;
-        odom_msg->twist.twist.angular.z = m_angularVel;
-
-        m_odom_pub->publish(std::move(odom_msg));
     }
 #endif
 
